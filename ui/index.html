@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KMDD Web Dashboard - Real-time kernel driver visualization and control">
+    <title>KMDD Dashboard — Kernel Driver Control</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ─── Header ─────────────────────────────────────── -->
+    <header id="app-header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">⌨</span>
+                <div class="logo-text">
+                    <h1>KMDD Dashboard</h1>
+                    <span class="logo-sub">Kernel Driver Control Panel</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="status-pills">
+                <div class="pill" id="pill-keyboard">
+                    <span class="pill-dot"></span>
+                    <span>Keyboard</span>
+                </div>
+                <div class="pill" id="pill-mouse">
+                    <span class="pill-dot"></span>
+                    <span>Mouse</span>
+                </div>
+                <div class="pill" id="pill-touchpad">
+                    <span class="pill-dot"></span>
+                    <span>Touchpad</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="connection-status" id="connection-status">
+                <span class="conn-dot"></span>
+                <span class="conn-label">Connecting…</span>
+            </div>
+            <div class="event-counter" id="event-counter">
+                <span class="counter-value">0</span>
+                <span class="counter-label">events</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── Tab Navigation ─────────────────────────────── -->
+    <nav id="tab-nav">
+        <button class="tab active" data-tab="live-events">
+            <span class="tab-icon">📡</span>
+            <span>Live Events</span>
+        </button>
+        <button class="tab" data-tab="keyboard">
+            <span class="tab-icon">⌨️</span>
+            <span>Keyboard</span>
+        </button>
+        <button class="tab" data-tab="mouse">
+            <span class="tab-icon">🖱️</span>
+            <span>Mouse</span>
+        </button>
+        <button class="tab" data-tab="touchpad">
+            <span class="tab-icon">🖐️</span>
+            <span>Touchpad</span>
+        </button>
+        <button class="tab" data-tab="statistics">
+            <span class="tab-icon">📊</span>
+            <span>Statistics</span>
+        </button>
+        <button class="tab" data-tab="injection">
+            <span class="tab-icon">💉</span>
+            <span>Injection</span>
+        </button>
+        <button class="tab" data-tab="settings">
+            <span class="tab-icon">⚙️</span>
+            <span>Settings</span>
+        </button>
+    </nav>
+
+    <!-- ─── Main Content ───────────────────────────────── -->
+    <main id="main-content">
+
+        <!-- Live Events Panel -->
+        <section id="panel-live-events" class="panel active">
+            <div class="panel-header">
+                <h2>Live Event Feed</h2>
+                <div class="panel-actions">
+                    <button class="btn btn-sm" id="btn-auto-scroll" title="Auto-scroll">
+                        ↓ Auto-scroll
+                    </button>
+                    <button class="btn btn-sm btn-danger" id="btn-clear-events" title="Clear events">
+                        ✕ Clear
+                    </button>
+                </div>
+            </div>
+            <div class="event-feed" id="event-feed">
+                <div class="event-empty">
+                    <span class="empty-icon">📡</span>
+                    <p>Waiting for events…</p>
+                    <p class="empty-hint">Start the backend server and events will appear here in real-time.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Keyboard Panel -->
+        <section id="panel-keyboard" class="panel">
+            <div class="panel-header">
+                <h2>Virtual Keyboard</h2>
+                <p class="panel-desc">Keys highlight in real-time. Click a key to inject its scan code.</p>
+            </div>
+            <div class="keyboard-container" id="keyboard-container">
+                <!-- Row 0: Esc + F-keys -->
+                <div class="kb-row kb-row-fn">
+                    <div class="key key-sm" data-code="1" data-scan="0x01">Esc</div>
+                    <div class="key-spacer"></div>
+                    <div class="key key-sm" data-code="59" data-scan="0x3B">F1</div>
+                    <div class="key key-sm" data-code="60" data-scan="0x3C">F2</div>
+                    <div class="key key-sm" data-code="61" data-scan="0x3D">F3</div>
+                    <div class="key key-sm" data-code="62" data-scan="0x3E">F4</div>
+                    <div class="key-spacer-sm"></div>
+                    <div class="key key-sm" data-code="63" data-scan="0x3F">F5</div>
+                    <div class="key key-sm" data-code="64" data-scan="0x40">F6</div>
+                    <div class="key key-sm" data-code="65" data-scan="0x41">F7</div>
+                    <div class="key key-sm" data-code="66" data-scan="0x42">F8</div>
+                    <div class="key-spacer-sm"></div>
+                    <div class="key key-sm" data-code="67" data-scan="0x43">F9</div>
+                    <div class="key key-sm" data-code="68" data-scan="0x44">F10</div>
+                    <div class="key key-sm" data-code="87" data-scan="0x57">F11</div>
+                    <div class="key key-sm" data-code="88" data-scan="0x58">F12</div>
+                </div>
+
+                <!-- Row 1: Number row -->
+                <div class="kb-row">
+                    <div class="key" data-code="41" data-scan="0x29">`</div>
+                    <div class="key" data-code="2" data-scan="0x02">1</div>
+                    <div class="key" data-code="3" data-scan="0x03">2</div>
+                    <div class="key" data-code="4" data-scan="0x04">3</div>
+                    <div class="key" data-code="5" data-scan="0x05">4</div>
+                    <div class="key" data-code="6" data-scan="0x06">5</div>
+                    <div class="key" data-code="7" data-scan="0x07">6</div>
+                    <div class="key" data-code="8" data-scan="0x08">7</div>
+                    <div class="key" data-code="9" data-scan="0x09">8</div>
+                    <div class="key" data-code="10" data-scan="0x0A">9</div>
+                    <div class="key" data-code="11" data-scan="0x0B">0</div>
+                    <div class="key" data-code="12" data-scan="0x0C">-</div>
+                    <div class="key" data-code="13" data-scan="0x0D">=</div>
+                    <div class="key key-w2" data-code="14" data-scan="0x0E">Backspace</div>
+                </div>
+
+                <!-- Row 2: QWERTY -->
+                <div class="kb-row">
+                    <div class="key key-w1_5" data-code="15" data-scan="0x0F">Tab</div>
+                    <div class="key" data-code="16" data-scan="0x10">Q</div>
+                    <div class="key" data-code="17" data-scan="0x11">W</div>
+                    <div class="key" data-code="18" data-scan="0x12">E</div>
+                    <div class="key" data-code="19" data-scan="0x13">R</div>
+                    <div class="key" data-code="20" data-scan="0x14">T</div>
+                    <div class="key" data-code="21" data-scan="0x15">Y</div>
+                    <div class="key" data-code="22" data-scan="0x16">U</div>
+                    <div class="key" data-code="23" data-scan="0x17">I</div>
+                    <div class="key" data-code="24" data-scan="0x18">O</div>
+                    <div class="key" data-code="25" data-scan="0x19">P</div>
+                    <div class="key" data-code="26" data-scan="0x1A">[</div>
+                    <div class="key" data-code="27" data-scan="0x1B">]</div>
+                    <div class="key key-w1_5" data-code="43" data-scan="0x2B">\</div>
+                </div>
+
+                <!-- Row 3: Home row -->
+                <div class="kb-row">
+                    <div class="key key-w1_75" data-code="58" data-scan="0x3A">Caps</div>
+                    <div class="key" data-code="30" data-scan="0x1E">A</div>
+                    <div class="key" data-code="31" data-scan="0x1F">S</div>
+                    <div class="key" data-code="32" data-scan="0x20">D</div>
+                    <div class="key" data-code="33" data-scan="0x21">F</div>
+                    <div class="key" data-code="34" data-scan="0x22">G</div>
+                    <div class="key" data-code="35" data-scan="0x23">H</div>
+                    <div class="key" data-code="36" data-scan="0x24">J</div>
+                    <div class="key" data-code="37" data-scan="0x25">K</div>
+                    <div class="key" data-code="38" data-scan="0x26">L</div>
+                    <div class="key" data-code="39" data-scan="0x27">;</div>
+                    <div class="key" data-code="40" data-scan="0x28">'</div>
+                    <div class="key key-w2_25" data-code="28" data-scan="0x1C">Enter</div>
+                </div>
+
+                <!-- Row 4: Shift row -->
+                <div class="kb-row">
+                    <div class="key key-w2_25" data-code="42" data-scan="0x2A">Shift</div>
+                    <div class="key" data-code="44" data-scan="0x2C">Z</div>
+                    <div class="key" data-code="45" data-scan="0x2D">X</div>
+                    <div class="key" data-code="46" data-scan="0x2E">C</div>
+                    <div class="key" data-code="47" data-scan="0x2F">V</div>
+                    <div class="key" data-code="48" data-scan="0x30">B</div>
+                    <div class="key" data-code="49" data-scan="0x31">N</div>
+                    <div class="key" data-code="50" data-scan="0x32">M</div>
+                    <div class="key" data-code="51" data-scan="0x33">,</div>
+                    <div class="key" data-code="52" data-scan="0x34">.</div>
+                    <div class="key" data-code="53" data-scan="0x35">/</div>
+                    <div class="key key-w2_75" data-code="54" data-scan="0x36">Shift</div>
+                </div>
+
+                <!-- Row 5: Bottom row -->
+                <div class="kb-row">
+                    <div class="key key-w1_5" data-code="29" data-scan="0x1D">Ctrl</div>
+                    <div class="key key-w1_25" data-code="125" data-scan="0x7D">Win</div>
+                    <div class="key key-w1_25" data-code="56" data-scan="0x38">Alt</div>
+                    <div class="key key-space" data-code="57" data-scan="0x39">Space</div>
+                    <div class="key key-w1_25" data-code="100" data-scan="0x64">Alt</div>
+                    <div class="key key-w1_25" data-code="126" data-scan="0x7E">Win</div>
+                    <div class="key key-w1_25" data-code="127" data-scan="0x7F">Menu</div>
+                    <div class="key key-w1_5" data-code="97" data-scan="0x61">Ctrl</div>
+                </div>
+
+                <!-- Arrow cluster -->
+                <div class="kb-row kb-row-arrows">
+                    <div class="arrow-cluster">
+                        <div class="arrow-top">
+                            <div class="key key-arrow" data-code="103" data-scan="0x67">↑</div>
+                        </div>
+                        <div class="arrow-bottom">
+                            <div class="key key-arrow" data-code="105" data-scan="0x69">←</div>
+                            <div class="key key-arrow" data-code="108" data-scan="0x6C">↓</div>
+                            <div class="key key-arrow" data-code="106" data-scan="0x6A">→</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mouse Panel -->
+        <section id="panel-mouse" class="panel">
+            <div class="panel-header">
+                <h2>Mouse Tracker</h2>
+                <p class="panel-desc">Live mouse movement and button state visualization.</p>
+            </div>
+            <div class="mouse-container">
+                <div class="mouse-viz">
+                    <canvas id="mouse-canvas" width="500" height="400"></canvas>
+                </div>
+                <div class="mouse-info">
+                    <div class="glass-card">
+                        <h3>Position Delta</h3>
+                        <div class="mouse-coords">
+                            <div class="coord"><span class="coord-label">ΔX</span><span class="coord-value"
+                                    id="mouse-dx">0</span></div>
+                            <div class="coord"><span class="coord-label">ΔY</span><span class="coord-value"
+                                    id="mouse-dy">0</span></div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3>Buttons</h3>
+                        <div class="mouse-buttons">
+                            <div class="mbtn" id="mbtn-left">L</div>
+                            <div class="mbtn" id="mbtn-middle">M</div>
+                            <div class="mbtn" id="mbtn-right">R</div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3>Scroll</h3>
+                        <div class="scroll-indicator" id="scroll-indicator">
+                            <span>⟳</span>
+                            <span id="scroll-value">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Touchpad Panel -->
+        <section id="panel-touchpad" class="panel">
+            <div class="panel-header">
+                <h2>Touchpad</h2>
+                <p class="panel-desc">Absolute position tracking and gesture visualization.</p>
+            </div>
+            <div class="touchpad-container">
+                <div class="touchpad-viz">
+                    <canvas id="touchpad-canvas" width="500" height="400"></canvas>
+                </div>
+                <div class="touchpad-info">
+                    <div class="glass-card">
+                        <h3>Position</h3>
+                        <div class="mouse-coords">
+                            <div class="coord"><span class="coord-label">X</span><span class="coord-value"
+                                    id="touch-x">0</span></div>
+                            <div class="coord"><span class="coord-label">Y</span><span class="coord-value"
+                                    id="touch-y">0</span></div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3>Touch State</h3>
+                        <div class="touch-state">
+                            <div class="touch-indicator" id="touch-indicator">
+                                <span class="touch-dot"></span>
+                                <span id="touch-state-label">No Touch</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3>Gestures</h3>
+                        <div class="gesture-log" id="gesture-log">
+                            <p class="empty-hint">Gestures will appear here…</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Panel -->
+        <section id="panel-statistics" class="panel">
+            <div class="panel-header">
+                <h2>Statistics</h2>
+                <p class="panel-desc">Event frequency, key heatmap, and live charts.</p>
+            </div>
+            <div class="stats-grid">
+                <div class="glass-card stat-card">
+                    <span class="stat-icon">⌨</span>
+                    <span class="stat-value" id="stat-key-count">0</span>
+                    <span class="stat-label">Key Events</span>
+                </div>
+                <div class="glass-card stat-card">
+                    <span class="stat-icon">🖱</span>
+                    <span class="stat-value" id="stat-mouse-count">0</span>
+                    <span class="stat-label">Mouse Events</span>
+                </div>
+                <div class="glass-card stat-card">
+                    <span class="stat-icon">🔘</span>
+                    <span class="stat-value" id="stat-click-count">0</span>
+                    <span class="stat-label">Button Clicks</span>
+                </div>
+                <div class="glass-card stat-card">
+                    <span class="stat-icon">⏱</span>
+                    <span class="stat-value" id="stat-uptime">0s</span>
+                    <span class="stat-label">Uptime</span>
+                </div>
+                <div class="glass-card stat-card">
+                    <span class="stat-icon">📏</span>
+                    <span class="stat-value" id="stat-distance">0</span>
+                    <span class="stat-label">Mouse Distance (px)</span>
+                </div>
+                <div class="glass-card stat-card stat-card-wide">
+                    <h3>Top Keys</h3>
+                    <div class="top-keys" id="top-keys">
+                        <p class="empty-hint">Press some keys to see frequency data…</p>
+                    </div>
+                </div>
+                <div class="glass-card stat-card stat-card-wide">
+                    <h3>Events Per Second</h3>
+                    <div class="eps-bar" id="eps-bar">
+                        <div class="eps-fill" id="eps-fill"></div>
+                        <span class="eps-label" id="eps-label">0 e/s</span>
+                    </div>
+                </div>
+                <div class="glass-card stat-card stat-card-wide">
+                    <h3>Button Click Distribution</h3>
+                    <div class="pie-chart-container">
+                        <canvas id="pie-chart" width="220" height="220"></canvas>
+                        <div class="pie-legend" id="pie-legend">
+                            <div class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span>Left
+                            </div>
+                            <div class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Middle
+                            </div>
+                            <div class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Right
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Injection Control Panel -->
+        <section id="panel-injection" class="panel">
+            <div class="panel-header">
+                <h2>Injection Control</h2>
+                <p class="panel-desc">Send test inputs to the kernel driver via sysfs injection.</p>
+            </div>
+            <div class="injection-grid">
+                <div class="glass-card">
+                    <h3>Text → Scancode</h3>
+                    <p class="inject-help">Type text to convert to scancodes and inject into the keyboard driver.</p>
+                    <div class="inject-text-area">
+                        <input type="text" id="inject-text-input" class="input inject-input"
+                            placeholder="Type text to inject…">
+                        <button class="btn btn-accent" id="btn-inject-text">⌨ Inject Text</button>
+                    </div>
+                    <div class="inject-status" id="inject-text-status"></div>
+                </div>
+                <div class="glass-card">
+                    <h3>Preset Patterns</h3>
+                    <p class="inject-help">Run predefined test patterns for keyboard and mouse events.</p>
+                    <div class="preset-grid">
+                        <button class="btn preset-btn" data-preset="hello">
+                            <span class="preset-icon">📝</span>
+                            <span class="preset-name">Type "HELLO"</span>
+                        </button>
+                        <button class="btn preset-btn" data-preset="circle">
+                            <span class="preset-icon">⭕</span>
+                            <span class="preset-name">Circle Motion</span>
+                        </button>
+                        <button class="btn preset-btn" data-preset="button_barrage">
+                            <span class="preset-icon">🖱️</span>
+                            <span class="preset-name">Button Barrage</span>
+                        </button>
+                    </div>
+                    <div class="inject-status" id="inject-preset-status"></div>
+                </div>
+                <div class="glass-card inject-card-wide">
+                    <h3>Mouse Waypoint Path</h3>
+                    <p class="inject-help">Click on the canvas to place waypoints, then inject the path as mouse
+                        packets.</p>
+                    <div class="waypoint-area">
+                        <canvas id="waypoint-canvas" width="500" height="300"></canvas>
+                        <div class="waypoint-actions">
+                            <button class="btn btn-accent" id="btn-inject-path">🖱 Inject Path</button>
+                            <button class="btn btn-danger" id="btn-clear-waypoints">✕ Clear</button>
+                            <span class="waypoint-count" id="waypoint-count">0 waypoints</span>
+                        </div>
+                    </div>
+                    <div class="inject-status" id="inject-path-status"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Panel -->
+        <section id="panel-settings" class="panel">
+            <div class="panel-header">
+                <h2>Settings</h2>
+                <p class="panel-desc">Configure driver parameters and dashboard preferences.</p>
+            </div>
+            <div class="settings-grid">
+                <div class="glass-card">
+                    <h3>Connection</h3>
+                    <div class="setting-row">
+                        <label>WebSocket URL</label>
+                        <input type="text" id="ws-url" value="ws://localhost:8765" class="input">
+                    </div>
+                    <div class="setting-row">
+                        <label>Auto-reconnect</label>
+                        <input type="checkbox" id="ws-auto-reconnect" checked class="toggle">
+                    </div>
+                    <button class="btn" id="btn-reconnect">Reconnect</button>
+                </div>
+                <div class="glass-card">
+                    <h3>Display</h3>
+                    <div class="setting-row">
+                        <label>Max events in feed</label>
+                        <input type="number" id="max-events" value="200" min="50" max="1000" class="input input-sm">
+                    </div>
+                    <div class="setting-row">
+                        <label>Show SYN events</label>
+                        <input type="checkbox" id="show-syn" class="toggle">
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>Keyboard</h3>
+                    <div class="setting-row">
+                        <label>Repeat Delay <span class="setting-val" id="repeat-delay-val">250ms</span></label>
+                        <input type="range" id="repeat-delay" min="100" max="1000" value="250" step="50" class="slider">
+                    </div>
+                    <div class="setting-row">
+                        <label>Repeat Rate <span class="setting-val" id="repeat-rate-val">33ms</span></label>
+                        <input type="range" id="repeat-rate" min="10" max="100" value="33" step="1" class="slider">
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>Mouse</h3>
+                    <div class="setting-row">
+                        <label>DPI Multiplier <span class="setting-val" id="dpi-val">1x</span></label>
+                        <input type="range" id="dpi-multiplier" min="1" max="10" value="1" step="1" class="slider">
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>LED Indicators</h3>
+                    <div class="setting-row">
+                        <label>Caps Lock</label>
+                        <input type="checkbox" id="led-caps" class="toggle">
+                    </div>
+                    <div class="setting-row">
+                        <label>Num Lock</label>
+                        <input type="checkbox" id="led-num" class="toggle">
+                    </div>
+                    <div class="setting-row">
+                        <label>Scroll Lock</label>
+                        <input type="checkbox" id="led-scroll" class="toggle">
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>Logging</h3>
+                    <div class="setting-row">
+                        <label>Log Level</label>
+                        <select id="log-level" class="input">
+                            <option value="DEBUG">DEBUG</option>
+                            <option value="INFO" selected>INFO</option>
+                            <option value="WARN">WARN</option>
+                            <option value="ERROR">ERROR</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ─── Footer ─────────────────────────────────────── -->
+    <footer id="app-footer">
+        <span>KMDD — Kernel Mouse & Keyboard Driver Development</span>
+        <span>OS Course Project 2025</span>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

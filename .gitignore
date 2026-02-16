@@ -1,0 +1,34 @@
+
+# Kernel build artifacts
+*.ko
+*.o
+*.mod
+*.mod.c
+*.mod.o
+*.order
+*.symvers
+.tmp_versions/
+.*.cmd
+Module.symvers
+modules.order
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs
+backend/*.log
+logs/*.json
+logs/*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Binaries
+userspace/reader
+userspace/event_logger
+test_e2e_log.txt

@@ -1,0 +1,9 @@
+# Kbuild file for virtual input drivers
+# This file is used by the kernel build system
+
+obj-m += keyboard_driver.o
+obj-m += mouse_driver.o
+obj-m += touchpad_driver.o
+
+# Additional compiler flags (optional)
+ccflags-y := -DDEBUG
