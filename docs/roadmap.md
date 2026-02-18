@@ -156,6 +156,9 @@ A week-by-week plan to **improve** the existing Keyboard-Mouse Device Driver pro
 ---
 
 ## Verification Plan
+>
+> [!NOTE]
+> See [Verification Report](verification_report.md) for detailed results.
 
 ### Automated Tests
 
